@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
-        node: ['16', '18']
+        node: ['14', '16', '18']
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     name: Node ${{ matrix.node }} on ${{ matrix.os }}
@@ -33,6 +33,9 @@ jobs:
         with:
           path: node_modules
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - name: Update npm
+        if: matrix.node == '14'
+        run: npm i -g npm@8
       - name: Install dependencies
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci --ignore-scripts
